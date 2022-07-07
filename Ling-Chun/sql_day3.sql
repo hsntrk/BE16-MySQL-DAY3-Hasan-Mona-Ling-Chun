@@ -94,13 +94,14 @@ WHERE titles.to_date > CURRENT_DATE();
  -- 10. Report:
 
  -- We need a table with managers, who are working for us at this moment: first and last name, date of birth, gender, hire_date, title, department name and salary.
-SELECT  employees.first_name, employees.last_name, employees.birth_date,  employees.gender, employees.hire_date, titles.title, salaries.salary, dept_emp.to_date, departments.dept_name, dept_emp.to_date
+SELECT  employees.first_name, employees.last_name, employees.birth_date,  employees.gender, employees.hire_date, titles.title, salaries.salary, salaries.to_date, departments.dept_name
 FROM dept_manager
 JOIN employees ON dept_manager.emp_no = employees.emp_no
 JOIN titles ON employees.emp_no = titles.emp_no
 JOIN salaries ON salaries.emp_no = employees.emp_no
 JOIN departments ON departments.dept_no = dept_manager.dept_no
-WHERE dept_emp.to_date > CURRENT_DATE();
+WHERE salaries.to_date > CURRENT_DATE()
+GROUP BY employees.emp_no;
 
 -- Bonus query:
 -- Create a query that will join all tables and show all data from all tables.
