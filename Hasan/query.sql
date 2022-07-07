@@ -146,14 +146,27 @@ WHERE employees.emp_no IN (SELECT dept_emp.emp_no FROM dept_emp WHERE dept_emp.t
 
 --  We need a table with managers, who are working for us at this moment: first and last name, date of birth, gender, hire_date, title, department name and salary.
 
-SELECT employees.emp_no, employees.first_name, employees.last_name, employees.birth_date, employees.gender, employees.hire_date, titles.title, departments.dept_name, departments.dept_no, salaries.salary
-  FROM `employees` 
-  INNER JOIN `titles` ON titles.emp_no = employees.emp_no
-  INNER JOIN `salaries` ON salaries.emp_no = employees.emp_no 
-  INNER JOIN `dept_manager` ON dept_manager.emp_no = employees.emp_no
-  INNER JOIN `departments` ON departments.dept_no = dept_manager.dept_no
-  INNER JOIN `dept_emp` ON dept_emp.emp_no = dept_emp.emp_no
-  WHERE salaries.to_date >= CURRENT_DATE  
-  ORDER BY `employees`.`emp_no` ASC
+-- solution 1
 
+SELECT employees.emp_no, employees.first_name, employees.last_name, employees.birth_date, employees.gender, employees.hire_date, titles.title, departments.dept_name, departments.dept_no, salaries.salary
+  FROM employees
+  INNER JOIN titles ON titles.emp_no = employees.emp_no
+  INNER JOIN salaries ON salaries.emp_no = employees.emp_no 
+  INNER JOIN dept_manager ON dept_manager.emp_no = employees.emp_no
+  INNER JOIN departments ON departments.dept_no = dept_manager.dept_no
+  INNER JOIN dept_emp ON dept_emp.emp_no = dept_emp.emp_no
+  WHERE salaries.to_date >= CURRENT_DATE  
+  ORDER BY employees.emp_no ASC
+
+-- solution 2 (no repeat entries)
+
+SELECT employees.emp_no, employees.first_name, employees.last_name, employees.birth_date, employees.gender, employees.hire_date, titles.title, departments.dept_name, departments.dept_no, salaries.salary
+  FROM employees 
+  INNER JOIN titles ON titles.emp_no = employees.emp_no
+  INNER JOIN salaries ON salaries.emp_no = employees.emp_no 
+  INNER JOIN dept_manager ON dept_manager.emp_no = employees.emp_no
+  INNER JOIN departments ON departments.dept_no = dept_manager.dept_no
+  INNER JOIN dept_emp ON dept_emp.emp_no = dept_emp.emp_no
+  WHERE salaries.to_date >= CURRENT_DATE  
+  GROUP BY employees.emp_no
 
